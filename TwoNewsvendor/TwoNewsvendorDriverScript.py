@@ -303,9 +303,12 @@ def Main():
         index=["theta_field_theta_central", "n"],
         columns=["ite"],
     )
-    dfBias_Var = dfBias.loc[
-        idx[:, 0 : params["N"]], idx["field_dec_bias_applied", :]
-    ].std(level="theta_field_theta_central")
+
+    dfBias_Var = (
+        dfBias.loc[idx[:, 0 : params["N"]], idx["field_dec_bias_applied", :]]
+        .groupby(level="theta_field_theta_central")
+        .std()
+    )
 
     maxVarIndex = dfBias_Var.max(axis=1).idxmax()
     nlargest = min(5, params["n_Testing_Ite"])
